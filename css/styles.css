@@ -5,3 +5,27 @@
 h1, h2, .form-control {
   text-align: center;
 }
+
+tr, td {
+/* background-color: red; */
+border-style: solid;
+text-align: center;
+border-radius: 0.25rem;
+border: 1px solid #dee2e6;
+border-collapse: separate;
+
+overflow: hidden;
+}
+
+#row-1, #row-2, #row-3 {
+  border-collapse: inherit;
+  margin-bottom: 0;
+}
+
+.gray {
+  background-color: #dee2e6;
+}
+
+.no-padding {
+  padding-right: 0;
+}
