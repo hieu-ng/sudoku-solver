@@ -29,3 +29,22 @@ overflow: hidden;
 .no-padding {
   padding-right: 0;
 }
+
+.input-row {
+  margin-top: 15px;
+}
+
+.sample-clear-div {
+  display: flex; 
+  justify-content: flex-end;
+}
+
+.sample-data, .clear-data {
+  margin-right: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.highlighted-cell {
+  background-color: #fce2ce;
+}
+
