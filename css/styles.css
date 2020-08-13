@@ -1,25 +1,45 @@
-.bottom-3 {
-  padding-bottom: 15px;
+p, h1, h2, .form-control {
+  text-align: center;  
 }
 
-h1, h2, .form-control {
-  text-align: center;
+.form-control {
+  padding: 1.5rem 0;
 }
 
-tr, td {
+.table td {
 /* background-color: red; */
 border-style: solid;
 text-align: center;
 border-radius: 0.25rem;
 border: 1px solid #dee2e6;
 border-collapse: separate;
-
+padding: 0.5rem;
 overflow: hidden;
 }
+
+
+@media (min-width: 576px) {
+.jumbotron {
+  padding: 2rem 2rem;
+}
+}
+
+.container-fluid {
+  width: 95%;
+}
+.submit-div {
+  display: flex; 
+  justify-content: center;
+}
+
 
 #row-1, #row-2, #row-3 {
   border-collapse: inherit;
   margin-bottom: 0;
+}
+
+.bottom-3 {
+  padding-bottom: 15px;
 }
 
 .gray {
@@ -34,17 +54,18 @@ overflow: hidden;
   margin-top: 15px;
 }
 
-.sample-clear-div {
+.button-div {
   display: flex; 
-  justify-content: flex-end;
+  justify-content: center;
+  /* margin: 0 auto; */
 }
 
-.sample-data, .clear-data {
+.btn{
   margin-right: 0.25rem;
   margin-bottom: 0.5rem;
+  width: 70%;
 }
 
-.highlighted-cell {
-  background-color: #fce2ce;
-}
+
+
 

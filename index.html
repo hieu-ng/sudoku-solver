@@ -7,6 +7,7 @@
   <!-- Boostrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/c611dc42b6.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -24,31 +25,23 @@
 
 <body>
   <div class="jumbotron">
-    <h1 class="display-4">Sudoku Solver</h1>
-    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to
-      featured content or information.</p>
-    <hr class="my-4">
-    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+    <h1 class="display-4"><i class="fas fa-th"></i> Sudoku Solver</h1>
+    <!-- <hr class="my-4"> -->
+    <!-- <p>You can input your grid or create a random problem.</p> -->
 
-    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample"
-      aria-expanded="false" aria-controls="collapseExample">
-      Input
-    </button>
-    <button type="submit" class="btn btn-success get-result">Submit</button>
-    <div class="collapse" id="collapseExample">
-      <div class="row input-row">
-        <div class="col-sm">
-          <h2>Input Grid</h2>
-          <div class='sample-clear-div'>
-            <button type="button" class="btn btn-secondary btn-sm sample-data">Example Input</button>
-            <button type="button" class="btn btn-danger btn-sm clear-data">Clear Input</button>            
-          </div>
-         <!-- row 1 -->
+
+  </div>
+  <div class="container-fluid">
+    <div class="container">
+      <p class='execute-time'></p>
+      <div class='row'>
+        <div class="col-lg-8">
+          <!-- row 1 -->
           <div class="row">
             <div class="col no-padding">
               <div class="input-group">
                 <input pattern="[0-9]*" inputmode="numeric" size="1" min="1" max="9" autocomplete="off"
-                  class="form-control" maxlength="1" value="0">
+                  class=" form-control" maxlength="1" value="0">
                 <input pattern="[0-9]*" inputmode="numeric" size="1" min="1" max="9" autocomplete="off"
                   class="form-control" maxlength="1" value="7">
                 <input pattern="[0-9]*" inputmode="numeric" size="1" min="1" max="9" autocomplete="off"
@@ -341,149 +334,20 @@
             </div>
           </div>
         </div>
-        <div class="col-sm">
-          <h2>Input File</h2>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-            </div>
-            <div class="custom-file">
-              <input type="file" class="custom-file-input" id="inputGroupFile01"
-                aria-describedby="inputGroupFileAddon01">
-              <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-            </div>
+        <div class="col-lg-4">
+          <div class="row button-div">
+            <button type="submit" class="btn btn-block btn-success get-result">Submit</button>
+          </div>
+          <div class="row button-div">
+            <button type="button" class="btn btn-block btn-secondary sample-data">Random Input</button>
+          </div>
+          <div class="row button-div">
+            <button type="button" class="btn btn-block btn-danger clear-data">Clear Input</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <hr>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm">
-        <h2>Result Grid from Input Grid</h2>
-        <!-- row 1 -->
-        <table class="table" id="row-1">
-          <tbody>
-            <tr>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-              <td>4</td>
-              <td>5</td>
-              <td>6</td>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-            </tr>
-            <tr>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-              <td>4</td>
-              <td>5</td>
-              <td>6</td>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-            </tr>
-            <tr>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-              <td>4</td>
-              <td>5</td>
-              <td>6</td>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="table" id="row-2">
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-              <td>7</td>
-              <td>8</td>
-              <td>9</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-              <td>7</td>
-              <td>8</td>
-              <td>9</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-              <td>7</td>
-              <td>8</td>
-              <td>9</td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="table" id="row-3">
-          <tbody>
-            <tr>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-              <td>4</td>
-              <td>5</td>
-              <td>6</td>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-            </tr>
-            <tr>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-              <td>4</td>
-              <td>5</td>
-              <td>6</td>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-            </tr>
-            <tr>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-              <td>4</td>
-              <td>5</td>
-              <td>6</td>
-              <td class='gray'>1</td>
-              <td class='gray'>2</td>
-              <td class='gray'>3</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-sm">
-        <h2>Input File</h2>
-      </div>
-    </div>
-  </div>
-  </div>
-
-
-
 </body>
 
 </html>
