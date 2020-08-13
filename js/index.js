@@ -1,5 +1,20 @@
 $(document).ready(() => {
-  // $(document).keyup(() => {});
+  // Add cordinate to form elements
+  addCoordinate();
+  $(".form-control").focus(function () {
+    $(".form-control").each((i, obj) => {
+      if ($(obj).css('background-color').length > 0){
+        $(obj).css('background-color', '');
+      }
+    });
+    var coorCur = $(this).attr('id');
+    var rowCol = getRowColFromCoordinate(coorCur);
+    $(".form-control").each((i, obj) => {
+      if (rowCol[0].includes($(obj).attr('id')) || rowCol[1].includes($(obj).attr('id'))) {
+        $(obj).css('background-color', '#e3fdfd');
+      }
+    });
+  });
   // Create sample sudoku grid
   randomGridEvent();
   //  Clear input grid
@@ -7,6 +22,42 @@ $(document).ready(() => {
   // Launch sudoku solver
   getResultEvent();
 });
+
+
+
+function resetText() {
+  $('.execute-time').text('You can random a new sudoku grid or input your own grid');
+}
+function getRowColFromCoordinate(coorStr) {
+  let coorRow = (coorStr.split(''))[0];
+  let coorCol = (coorStr.split(''))[1];
+  let row = [];
+  let col = [];
+  for (i = 0; i < 9; i++) {
+    row.push(String(coorRow) + String(i));
+  }
+  for (j = 0; j < 9; j++) {
+    col.push(String(j) + String(coorCol));
+  }
+  row = row.filter(function(value, index, arr){ return value !== String(coorStr);});
+  col = col.filter(function(value, index, arr){ return value !== String(coorStr);});
+  return [row, col];
+}
+
+// add coordinate to form elements 
+function addCoordinate() {
+  let row = 0;
+  let col = 0;
+  $('.form-control').each((i, obj) => {
+    if (i > 0 && i % 9 == 0) {
+      row += 1;
+      col = 0;
+    }
+    let cor = String(row) + String(col);
+    $(obj).attr('id', cor);
+    col += 1;
+  });
+}
 
 
 // random new grid
@@ -26,6 +77,7 @@ function randomGridEvent() {
       j = j + 1
     });
     enableButton('get-result');
+    resetText();
   });
 }
 
@@ -34,12 +86,22 @@ function clearGridEvent() {
   $(".clear-data").click(() => {
     $('.form-control').each((i, obj) => {
       removeHighlight(obj);
-      $(obj).val(0);
+      $(obj).val('');
       $(obj).prop('readonly', false);
     });
     arr = [[]];
     enableButton('get-result');
+    resetText();
   });
+}
+
+
+function checkWin(zeroPosition, a, a_res){
+  if  (!zeroPosition.length) {
+    if (JSON.stringify(a) == JSON.stringify(a_res)){
+      alert('Congratulations! You solved the puzzle.');
+    }
+  }
 }
 
 // get result event
@@ -63,9 +125,11 @@ function getResultEvent() {
       alert('ERROR! Grid is empty!');
     } else {
       var t0 = performance.now();
+      arrTemp = arr;
       solver(arr);
+      checkWin(zeroPosition,arrTemp, arr);
       var t1 = performance.now();
-      $('.execute-time').text(`Solving time took ${(t1 - t0).toFixed(2)} miliseconds.`);
+      // $('.execute-time').text(`Solving time took ${(t1 - t0).toFixed(2)} miliseconds.`);
       var count_output = 0;
       var j = 0;
       // Display result grid
@@ -79,8 +143,8 @@ function getResultEvent() {
         j = j + 1;
       });
       $(".get-result").prop("disabled", true);
-    }  
-});
+    }
+  });
 }
 
 function getZeroPosition(i, val, a) {
@@ -94,7 +158,9 @@ function getZeroPosition(i, val, a) {
 function removeHighlight(obj) {
   if ($(obj).hasClass('highlighted-result')) {
     $(obj).removeClass('highlighted-result');
-    $(obj).css({ "background-color": 'white' });
+  }
+  if ($(obj).css('background-color').length >0) {
+    $(obj).css({ "background-color": '' });
   }
 }
 
@@ -206,7 +272,7 @@ function findEmpty(grid) {
 // random a new grid
 function randomSudoku() {
   a = SudokuCreate(9);
-  delNum = Math.floor((Math.random() * 21) + 15);
+  delNum = Math.floor((Math.random() * 25) + 20);
   let i = 0;
 
   let exist = [[]];
@@ -216,12 +282,12 @@ function randomSudoku() {
     let rowC = Math.abs(8 - row);
     let colC = Math.abs(8 - col);
     if (exist.filter(cur => (JSON.stringify(cur) == JSON.stringify([row, col]))).length === 0) {
-      a[row][col] = 0;
+      a[row][col] = '';
       exist.push([row, col]);
 
     }
     if (exist.filter(cur => (JSON.stringify(cur) == JSON.stringify([rowC, colC]))).length === 0) {
-      a[rowC][colC] = 0;
+      a[rowC][colC] = '';
       exist.push([rowC, colC]);
     }
     // console.log(row, col, '||', rowC, colC);
