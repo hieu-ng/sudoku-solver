@@ -1,3 +1,20 @@
+@media screen and (max-width: 992px) {
+.get-result, .sample-data, .clear-data .difficulty{
+  /* display: inline-block; */
+  width: 30%;
+}
+
+.get-result {
+  margin-top: .5rem;
+}
+
+.col-lg-3 {
+  display: flex;
+  justify-content: space-between;
+}
+
+}
+
 p, h1, h2, .form-control {
   text-align: center;  
 }
@@ -26,9 +43,6 @@ overflow: hidden;
 }
 }
 
-.container-fluid {
-  width: 95%;
-}
 .submit-div {
   display: flex; 
   justify-content: center;
@@ -56,17 +70,7 @@ overflow: hidden;
   margin-top: 15px;
 }
 
-.button-div {
-  display: flex; 
-  justify-content: center;
-  /* margin: 0 auto; */
-}
 
-.btn{
-  margin-right: 0.25rem;
-  margin-bottom: 0.5rem;
-  width: 70%;
-}
 
 
 

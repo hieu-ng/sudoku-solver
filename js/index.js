@@ -1,20 +1,9 @@
 $(document).ready(() => {
   // Add cordinate to form elements
   addCoordinate();
-  $(".form-control").focus(function () {
-    $(".form-control").each((i, obj) => {
-      if ($(obj).css('background-color').length > 0){
-        $(obj).css('background-color', '');
-      }
-    });
-    var coorCur = $(this).attr('id');
-    var rowCol = getRowColFromCoordinate(coorCur);
-    $(".form-control").each((i, obj) => {
-      if (rowCol[0].includes($(obj).attr('id')) || rowCol[1].includes($(obj).attr('id'))) {
-        $(obj).css('background-color', '#e3fdfd');
-      }
-    });
-  });
+  limitInput();
+  focusCellEvent();
+  focusOutEvent();  
   // Create sample sudoku grid
   randomGridEvent();
   //  Clear input grid
@@ -23,25 +12,94 @@ $(document).ready(() => {
   getResultEvent();
 });
 
+function limitInput() {
+  $('.form-control').keyup(function () {
+    this.value = this.value.replace(/[^1-9\.]/g, '');
+  });
+}
 
+function focusOutEvent() {
+  $(".form-control").focusout(function () {
+    $(".form-control").each((i, obj) => {
+      if ($(obj).css('background-color').length > 0) {
+        if ($(obj).css('background-color') != 'rgb(255, 0, 0)') {
+          $(obj).css('background-color', '');
+        }
+      }
+    });
+    var coorCur = $(this).attr('id');
+    var valCur = $(this).val();
+    var arr = [[]];
+    var count_input = 0;
+    var zero = [];
+    if ($(this).val() != "") {
+      $(".form-control").each((i, obj) => {
+        if (i > 0 && i % 9 == 0) {
+          count_input = count_input + 1;
+          arr[count_input] = [];
+        }
+        if ($(obj).attr('id') != coorCur) {
+          arr[count_input].push($(obj).val());
+        }
+        getZeroPosition(i, $(obj).val(), zero);
+      });
+      if (zero.length < 80) {
+        let coorRow = (coorCur.split(''))[0];
+        let coorCol = (coorCur.split(''))[1];
+        if (valid(arr, valCur, [coorRow, coorCol]) == false) {
+          $(this).css('background-color', 'rgb(255, 0, 0)');
+        }
+        else {
+          $(this).css('background-color', '#fff');
+        }
+      }
+    }
+    else {
+      if ($(this).css('background-color') == 'rgb(255, 0, 0)') {
+        $(this).css('background-color', '');
+      }
+    }
+  });
+}
+
+function focusCellEvent() {
+  $(".form-control").focus(function () {
+    var coorCur = $(this).attr('id');
+    var valCur = $(this).val();
+    var rowCol = getRowColFromCoordinate(coorCur);
+    $(".form-control").each((i, obj) => {
+      if (rowCol[0].includes($(obj).attr('id')) && !rowCol[1].includes($(obj).attr('id'))) {
+        $(obj).css('background-color', '#e3fdfd');
+      }
+    });
+  });
+}
 
 function resetText() {
-  $('.execute-time').text('You can random a new sudoku grid or input your own grid');
+  $('.notification').text('You can random a new sudoku grid or input your own grid');
 }
 function getRowColFromCoordinate(coorStr) {
   let coorRow = (coorStr.split(''))[0];
   let coorCol = (coorStr.split(''))[1];
   let row = [];
   let col = [];
+  let ignore = [];
   for (i = 0; i < 9; i++) {
     row.push(String(coorRow) + String(i));
   }
   for (j = 0; j < 9; j++) {
     col.push(String(j) + String(coorCol));
   }
-  row = row.filter(function(value, index, arr){ return value !== String(coorStr);});
-  col = col.filter(function(value, index, arr){ return value !== String(coorStr);});
-  return [row, col];
+  row = row.filter(function (value, index, arr) { return value !== String(coorStr); });
+  col = col.filter(function (value, index, arr) { return value !== String(coorStr); });
+  var res = row.concat(col);
+  $(".form-control").each((i, obj) => {
+    if ($(obj).css('background-color') == 'rgb(255, 0, 0)') {
+      ignore.push($(obj).attr('id'));
+    }
+  });
+
+  return [res, ignore];
 }
 
 // add coordinate to form elements 
@@ -96,9 +154,9 @@ function clearGridEvent() {
 }
 
 
-function checkWin(zeroPosition, a, a_res){
-  if  (!zeroPosition.length) {
-    if (JSON.stringify(a) == JSON.stringify(a_res)){
+function checkWin(zeroPosition, a, a_res) {
+  if (!zeroPosition.length) {
+    if (JSON.stringify(a) == JSON.stringify(a_res)) {
       alert('Congratulations! You solved the puzzle.');
     }
   }
@@ -120,20 +178,19 @@ function getResultEvent() {
       arr[count_input].push($(obj).val());
     });
     // Check for valid input
-    if (checkValidInput(arr) == false) {
-
-      alert('ERROR! Grid is empty!');
-    } else {
+    var checkValid = checkInputBeforeSubmit(arr);
+    if (checkValid == 'valid') {
       var t0 = performance.now();
       arrTemp = arr;
       solver(arr);
-      checkWin(zeroPosition,arrTemp, arr);
+      checkWin(zeroPosition, arrTemp, arr);
       var t1 = performance.now();
-      // $('.execute-time').text(`Solving time took ${(t1 - t0).toFixed(2)} miliseconds.`);
+      // $('.notification').text(`Solving time took ${(t1 - t0).toFixed(2)} miliseconds.`);
       var count_output = 0;
       var j = 0;
       // Display result grid
       $('.form-control').each((i, obj) => {
+
         highlightResult(i, obj, zeroPosition);
         if (i > 0 && i % 9 == 0) {
           count_output = count_output + 1;
@@ -143,23 +200,26 @@ function getResultEvent() {
         j = j + 1;
       });
       $(".get-result").prop("disabled", true);
+    } else if (checkValid == 'errorInvalid') {
+      $('.notification').text('ERROR! Input grid is invalid!');
+    } else if (checkValid == 'errorEmpty') {
+      $('.notification').text('ERROR! Input grid is empty!'); 
     }
   });
 }
 
 function getZeroPosition(i, val, a) {
-  if (val == 0) {
+  if (val == '') {
     a.push(i);
   }
 }
-
 
 // remove highlight
 function removeHighlight(obj) {
   if ($(obj).hasClass('highlighted-result')) {
     $(obj).removeClass('highlighted-result');
   }
-  if ($(obj).css('background-color').length >0) {
+  if ($(obj).css('background-color').length > 0) {
     $(obj).css({ "background-color": '' });
   }
 }
@@ -182,25 +242,29 @@ function highlightResult(i, obj, a) {
       $(obj).addClass('highlighted-result');
       $(obj).css({ "background-color": '#dcedc1' });
     } else {
-      $(obj).css({ "background-color": 'white' });
+      $(obj).css({ "background-color": '' });
     }
   });
 }
 
 // Check for valid input
-function checkValidInput(a) {
+function checkInputBeforeSubmit(a) {
   let count = 0;
-  a.forEach((cur) => {
-    cur.forEach((c) => {
-      if (c > 0) {
-        count++;
+  a.forEach((item, index, arr) => {
+    item.forEach((item_c, index_c, arr_c) => {
+      if (item_c > 0) {
+        if (valid(a, item_c, [index, index_c])) {
+          count++;
+        } else {
+          return 'errorInvalid';
+        }
       }
     });
   });
   if (count < 1) {
-    return false;
+    return 'errorEmpty';
   } else {
-    return true;
+    return 'valid';
   }
 }
 
@@ -248,8 +312,8 @@ function valid(grid, num, pos) {
   var box_x = Math.floor(pos[1] / 3) * 3;
   var box_y = Math.floor(pos[0] / 3) * 3;
 
-  for (i = box_y; i < box_y + 2; i++) {
-    for (j = box_x; j < box_x + 2; j++) {
+  for (i = box_y; i < box_y + 3; i++) {
+    for (j = box_x; j < box_x + 3; j++) {
       if (grid[i][j] == num && JSON.stringify([i, j]) != JSON.stringify(pos)) {
         return false;
       }
