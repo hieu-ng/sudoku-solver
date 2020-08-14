@@ -3,7 +3,7 @@ $(document).ready(() => {
   addCoordinate();
   limitInput();
   focusCellEvent();
-  focusOutEvent();  
+  focusOutEvent();
   // Create sample sudoku grid
   randomGridEvent();
   //  Clear input grid
@@ -102,7 +102,7 @@ function getRowColFromCoordinate(coorStr) {
   return [res, ignore];
 }
 
-// add coordinate to form elements 
+// add coordinate to form elements
 function addCoordinate() {
   let row = 0;
   let col = 0;
@@ -179,18 +179,19 @@ function getResultEvent() {
     });
     // Check for valid input
     var checkValid = checkInputBeforeSubmit(arr);
-    if (checkValid == 'valid') {
-      var t0 = performance.now();
+    console.log(checkValid);
+    if (checkValid == true) {
+      // var t0 = performance.now();
+      console.log('fail');
       arrTemp = arr;
       solver(arr);
       checkWin(zeroPosition, arrTemp, arr);
-      var t1 = performance.now();
+      // var t1 = performance.now();
       // $('.notification').text(`Solving time took ${(t1 - t0).toFixed(2)} miliseconds.`);
       var count_output = 0;
       var j = 0;
       // Display result grid
       $('.form-control').each((i, obj) => {
-
         highlightResult(i, obj, zeroPosition);
         if (i > 0 && i % 9 == 0) {
           count_output = count_output + 1;
@@ -200,10 +201,6 @@ function getResultEvent() {
         j = j + 1;
       });
       $(".get-result").prop("disabled", true);
-    } else if (checkValid == 'errorInvalid') {
-      $('.notification').text('ERROR! Input grid is invalid!');
-    } else if (checkValid == 'errorEmpty') {
-      $('.notification').text('ERROR! Input grid is empty!'); 
     }
   });
 }
@@ -250,22 +247,53 @@ function highlightResult(i, obj, a) {
 // Check for valid input
 function checkInputBeforeSubmit(a) {
   let count = 0;
-  a.forEach((item, index, arr) => {
-    item.forEach((item_c, index_c, arr_c) => {
-      if (item_c > 0) {
-        if (valid(a, item_c, [index, index_c])) {
-          count++;
-        } else {
-          return 'errorInvalid';
+  console.log(a);
+  for (i = 0; i < 9; i++) {
+    for (j = 0; j < 9; j++) {
+      if (a[i][j] > 0) {
+        count++;
+        if (valid(a, a[i][j], [i, j]) == false) {
+          $('.notification').text('ERROR! Input grid is invalid!');
+          return false;
         }
       }
-    });
-  });
-  if (count < 1) {
-    return 'errorEmpty';
-  } else {
-    return 'valid';
+    }
   }
+  if (count < 1) {
+    $('.notification').text('ERROR! Input grid is empty!');
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function valid(grid, num, pos) {
+  // check row
+  for (i = 0; i < grid[0].length; i++) {
+    if (grid[pos[0]][i] == num && pos[1] != i) {
+      return false;
+    }
+  }
+  // check col
+  for (j = 0; j < grid.length; j++) {
+    if (grid[j][pos[1]] == num && pos[0] != j) {
+      return false;
+    }
+  }
+
+  // Check box
+  // get top left position cell in current 3x3 box
+  var box_x = Math.floor(pos[1] / 3) * 3;
+  var box_y = Math.floor(pos[0] / 3) * 3;
+
+  for (i = box_y; i < box_y + 3; i++) {
+    for (j = box_x; j < box_x + 3; j++) {
+      if (grid[i][j] == num && JSON.stringify([i, j]) != JSON.stringify(pos)) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 // solve grid
@@ -337,7 +365,7 @@ function findEmpty(grid) {
 function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+  return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
 }
 
 // random a new grid
@@ -361,7 +389,7 @@ function randomSudoku() {
       a[rowC][colC] = '';
       exist.push([rowC, colC]);
     }
-    // console.log(row, col, '||', rowC, colC);    
+    // console.log(row, col, '||', rowC, colC);
     i++;
   }
   return a;
@@ -381,7 +409,7 @@ function SudokuCreate(maxNum) {
 
   //size of sub boxes, figure out more dynamic way to set this
   var horizontalBoxSize = 3,
-    verticalBoxSize = maxNum === 9 ? 3 : 2;
+  verticalBoxSize = maxNum === 9 ? 3 : 2;
 
   //find random number from 0 to max number, expludes max
   function getRandomInt(max) {
@@ -391,10 +419,10 @@ function SudokuCreate(maxNum) {
   //places numbers in the sudoku array
   function placeNumber(num, arr) {
     var lastRowIndex = arr.length - 1, //the index of the last row in the working array
-      lastRow = arr[lastRowIndex], //the reference to the last row
-      rowsToCheck = lastRowIndex % verticalBoxSize, //find what row of the sub box we are in vertically
-      safeIndexes = [], //find which column is save to put a number in to
-      randomSafeIndex; //pick one of the columns to place the number into from the safeIndexes array
+    lastRow = arr[lastRowIndex], //the reference to the last row
+    rowsToCheck = lastRowIndex % verticalBoxSize, //find what row of the sub box we are in vertically
+    safeIndexes = [], //find which column is save to put a number in to
+    randomSafeIndex; //pick one of the columns to place the number into from the safeIndexes array
 
     //used to find a safe column to place the number in the current row
     function findSafeIndex(boxesUsed) {
