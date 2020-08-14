@@ -157,7 +157,7 @@ function clearGridEvent() {
 function checkWin(zeroPosition, a, a_res) {
   if (!zeroPosition.length) {
     if (JSON.stringify(a) == JSON.stringify(a_res)) {
-      alert('Congratulations! You solved the puzzle.');
+      $('.notification').text('Congratulations! You solved the puzzle.');
     }
   }
 }
@@ -333,28 +333,35 @@ function findEmpty(grid) {
   return false;
 }
 
+// Getting a random integer between two values, inclusive (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random)
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+}
+
 // random a new grid
 function randomSudoku() {
   a = SudokuCreate(9);
-  delNum = Math.floor((Math.random() * 30) + 26);
+  delNum = getRandomIntInclusive(30, 40);
   let i = 0;
 
-  let exist = [[]];
+  var exist = [[]];
   while (i < delNum) {
-    let row = Math.floor((Math.random() * 8) + 0);
-    let col = Math.floor((Math.random() * 8) + 0);
+    let row = getRandomIntInclusive(0, 8);
+    let col = getRandomIntInclusive(0, 8);
+    // counterpart when rotate
     let rowC = Math.abs(8 - row);
     let colC = Math.abs(8 - col);
     if (exist.filter(cur => (JSON.stringify(cur) == JSON.stringify([row, col]))).length === 0) {
       a[row][col] = '';
       exist.push([row, col]);
-
     }
     if (exist.filter(cur => (JSON.stringify(cur) == JSON.stringify([rowC, colC]))).length === 0) {
       a[rowC][colC] = '';
       exist.push([rowC, colC]);
     }
-    // console.log(row, col, '||', rowC, colC);
+    // console.log(row, col, '||', rowC, colC);    
     i++;
   }
   return a;
