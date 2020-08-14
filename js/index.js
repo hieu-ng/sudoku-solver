@@ -272,7 +272,7 @@ function findEmpty(grid) {
 // random a new grid
 function randomSudoku() {
   a = SudokuCreate(9);
-  delNum = Math.floor((Math.random() * 25) + 20);
+  delNum = Math.floor((Math.random() * 1) + 1);
   let i = 0;
 
   let exist = [[]];
