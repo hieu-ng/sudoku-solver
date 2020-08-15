@@ -175,14 +175,18 @@ function getResultEvent() {
         count_input = count_input + 1;
         arr[count_input] = [];
       }
-      arr[count_input].push($(obj).val());
+      if ($(obj).val() == '') {
+        arr[count_input].push(0);
+      } else {
+        arr[count_input].push(parseInt($(obj).val()));
+      }
+
     });
     // Check for valid input
     var checkValid = checkInputBeforeSubmit(arr);
-    console.log(checkValid);
+
     if (checkValid == true) {
       // var t0 = performance.now();
-      console.log('fail');
       arrTemp = arr;
       solver(arr);
       checkWin(zeroPosition, arrTemp, arr);
@@ -247,9 +251,10 @@ function highlightResult(i, obj, a) {
 // Check for valid input
 function checkInputBeforeSubmit(a) {
   let count = 0;
-  console.log(a);
-  for (i = 0; i < 9; i++) {
-    for (j = 0; j < 9; j++) {
+  var i = j = 0;
+  while (i < 9) {
+    while (j < 9) {
+      console.log(a[i][j], i, j);
       if (a[i][j] > 0) {
         count++;
         if (valid(a, a[i][j], [i, j]) == false) {
@@ -257,7 +262,9 @@ function checkInputBeforeSubmit(a) {
           return false;
         }
       }
+      j++;
     }
+    i++;
   }
   if (count < 1) {
     $('.notification').text('ERROR! Input grid is empty!');
@@ -409,7 +416,7 @@ function SudokuCreate(maxNum) {
 
   //size of sub boxes, figure out more dynamic way to set this
   var horizontalBoxSize = 3,
-  verticalBoxSize = maxNum === 9 ? 3 : 2;
+    verticalBoxSize = maxNum === 9 ? 3 : 2;
 
   //find random number from 0 to max number, expludes max
   function getRandomInt(max) {
@@ -419,10 +426,10 @@ function SudokuCreate(maxNum) {
   //places numbers in the sudoku array
   function placeNumber(num, arr) {
     var lastRowIndex = arr.length - 1, //the index of the last row in the working array
-    lastRow = arr[lastRowIndex], //the reference to the last row
-    rowsToCheck = lastRowIndex % verticalBoxSize, //find what row of the sub box we are in vertically
-    safeIndexes = [], //find which column is save to put a number in to
-    randomSafeIndex; //pick one of the columns to place the number into from the safeIndexes array
+      lastRow = arr[lastRowIndex], //the reference to the last row
+      rowsToCheck = lastRowIndex % verticalBoxSize, //find what row of the sub box we are in vertically
+      safeIndexes = [], //find which column is save to put a number in to
+      randomSafeIndex; //pick one of the columns to place the number into from the safeIndexes array
 
     //used to find a safe column to place the number in the current row
     function findSafeIndex(boxesUsed) {
